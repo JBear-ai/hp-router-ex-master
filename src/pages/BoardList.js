@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AxiosAPi from "../api/AxiosAPi";
+import BoardItem from "../components/board/BoardItem";
 
 const Container = styled.div`
   max-width: 720px;
@@ -87,9 +88,11 @@ const BoardList = () => {
       ) : (
         <List>
           {boards.map((board) => (
-            <p key={board.boardId}>
-              {board.title}: {board.content}
-            </p>
+            <BoardItem
+              key={board.boardId}
+              board={board}
+              onClick={handleItemClick}
+            />
           ))}
         </List>
       )}
