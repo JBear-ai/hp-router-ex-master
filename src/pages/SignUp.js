@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
+import AxiosAPi from "../api/AxiosAPi";
 
 /* ───────── 정규식 ───────── */
 // 이메일: 공백·@ 없는 문자 + @ + 도메인 + . + 2자 이상 최상위 도메인
@@ -71,8 +72,85 @@ const Signup = () => {
   const [inputPwd, setInputPwd] = useState("");
   const [inputPwdCheck, setInputPwdCheck] = useState("");
   const [inputName, setInputName] = useState("");
+  const [isDuplicate, setIsDuplicate] = useState(false);
 
   const nav = useNavigate();
+
+  // 중복여부 검사
+  const checkEmail = async (e) => {
+    const email = e.target.value.trim();
+    setInputEmail(email);
+
+    // 형식이 맞지 않으면 서버 확인하지 않음
+    if (!EMAIL_REGEX.test(email)) {
+      setIsDuplicate(false);
+      return;
+    }
+
+    // 서버에 이메일 존재 여부 확인
+    const response = await AxiosAPi.memberExist(email);
+    console.log("중복확인 응답:", response.data);
+    setIsDuplicate(response.data);
+  };
+
+  /*
+  // 이메일 중복 체크
+//
+// 이메일을 입력할 때마다 서버에 요청하면
+// 한 글자를 입력할 때마다 API가 호출되어 서버에 불필요한 요청이 많이 발생할 수 있음.
+//
+// 그래서 이메일 형식이 맞는 경우에만
+// 사용자가 입력을 멈춘 뒤 0.5초 후 서버에 중복 확인 요청을 보냄.
+// → 이런 방식을 디바운스(Debounce)라고 함.
+//
+// inputEmail이 변경될 때마다 useEffect가 다시 실행됨.
+useEffect(() => {
+  // 이메일 형식이 맞지 않으면 서버까지 확인할 필요가 없음
+  if (!isEmail) {
+    setEmailStatus("idle");
+    return;
+  }
+
+  // 이메일 형식이 맞으면 중복 확인 중 상태로 변경
+  setEmailStatus("checking");
+
+  // 이전 요청의 결과인지 판단하기 위한 변수
+  let ignore = false;
+
+  // 사용자가 입력을 멈춘 뒤 0.5초 후 실행
+  const timer = setTimeout(async () => {
+    try {
+      // 서버에 해당 이메일이 존재하는지 요청
+      const response = await AxiosApi.memberExist(inputEmail);
+
+      // 이메일이 이미 변경된 뒤 도착한 이전 응답이라면 무시
+      if (ignore) return;
+
+      // 서버 응답
+      // true  → 이미 존재하는 이메일
+      // false → 사용 가능한 이메일
+      setEmailStatus(
+        response.data === true ? "duplicate" : "available"
+      );
+    } catch (error) {
+      // 서버 요청 자체가 실패한 경우
+      if (!ignore) {
+        setEmailStatus("error");
+      }
+    }
+  }, 500);
+
+  // inputEmail이 다시 변경되거나 컴포넌트가 사라질 때 실행
+  return () => {
+    // 이미 진행 중이던 이전 응답은 사용하지 않도록 표시
+    ignore = true;
+
+    // 0.5초가 지나기 전에 새로운 입력이 들어오면
+    // 이전에 예약했던 서버 요청을 취소
+    clearTimeout(timer);
+  };
+}, [inputEmail, isEmail]);
+  */
 
   /* 유효성은 state로 따로 두지 않고 렌더링 때 계산(파생값)
      → 비밀번호를 바꾸면 재확인 결과도 자동으로 다시 계산됨 */
@@ -81,19 +159,33 @@ const Signup = () => {
   const isPwdCheck = inputPwdCheck !== "" && inputPwd === inputPwdCheck;
   const isName = NAME_REGEX.test(inputName);
 
-  const isAllValid = isEmail && isPwd && isPwdCheck && isName;
+  // 이메일 형식도 맞고,
+  // 서버 중복 검사 결과도 available이어야 최종 통과
+  // const isEmailOk =
+  // isEmail && emailStatus === "available";
 
-  const onSubmit = (e) => {
+  const isAllValid = isEmail && !isDuplicate && isPwd && isPwdCheck && isName;
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (!isAllValid) return;
 
-    localStorage.setItem("email", inputEmail);
-    localStorage.setItem("pwd", inputPwd);
-    localStorage.setItem("name", inputName);
-
-    alert(`${inputName}님, 회원가입이 완료되었습니다.`);
-    nav("/", { replace: true }); // 로그인 페이지 경로에 맞게 수정
-                                // 회원 가입 페이지를 다시 돌아가는걸 막기 위해
+    // localStorage.setItem("email", inputEmail);
+    // localStorage.setItem("pwd", inputPwd);
+    // localStorage.setItem("name", inputName);
+    const memberSignup = await AxiosAPi.memberSingup(
+      inputEmail,
+      inputPwd,
+      inputName,
+    );
+    console.log(memberSignup.data);
+    if (memberSignup.data === true) {
+      alert(`${inputName}님, 회원가입이 완료되었습니다.`);
+      nav("/", { replace: true }); // 로그인 페이지 경로에 맞게 수정
+      // 회원 가입 페이지를 다시 돌아가는걸 막기 위해
+    } else {
+      alert("회원 가입이 실패 하였습니다.");
+    }
   };
 
   return (
@@ -106,13 +198,15 @@ const Signup = () => {
             type="email"
             value={inputEmail}
             placeholder="이메일"
-            onChange={(e) => setInputEmail(e.target.value.trim())}
+            onChange={checkEmail}
           />
-          <Message $valid={isEmail}>
+          <Message $valid={isEmail && !isDuplicate}>
             {inputEmail &&
-              (isEmail
-                ? "사용 가능한 이메일입니다."
-                : "이메일 형식이 올바르지 않습니다.")}
+              (!isEmail
+                ? "이메일 형식이 올바르지 않습니다"
+                : isDuplicate
+                  ? "이미 존재하는 이메일입니다."
+                  : "사용 가능한 이메일입니다")}
           </Message>
         </Field>
 
