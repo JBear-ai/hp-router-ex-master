@@ -3,7 +3,7 @@ import axios from "axios"; // 비동기 통신 라이브러리
 
 const HM_DOMAIN = "http://localhost:8111"; // 나중에 수정을 할때 편하게 하기 위한 밑작업
 
-const AxiosAPi = {
+const AxiosApi = {
   // 로그인 (Auth_Controller)
   // 회원 가입 여부 (GET)
   memberExist: async (email) => {
@@ -73,14 +73,36 @@ const AxiosAPi = {
     return await axios.put(HM_DOMAIN + "/board/modify", { id, title, content });
   },
   // 게시글 삭제 (DEL)
+  boardDelete: async (id) => {
+    return await axios.delete(HM_DOMAIN + `/board/${id}`);
+  },
   // 게시글 페이지네이션 (GET)
 
   // 댓글 (Comment_Controller)
   // 특정 게시글 댓글 목록 조회 (GET)
+  commentList: async (boardId) => {
+    return await axios.get(HM_DOMAIN + `/comment/list/${boardId}`);
+  },
   // 댓글 작성 (POST)
+  commentWrite: async (boardId, content, email) => {
+    return await axios.post(HM_DOMAIN + "/comment/write", {
+      boardId,
+      content,
+      email,
+    });
+  },
   // 댓글 수정 (PUT)
+  commentModify: async (commentId, content, email) => {
+    return await axios.put(HM_DOMAIN + `/comment/${commentId}`, {
+      content,
+      email,
+    });
+  },
   // 댓글 삭제 (DEL)
+  commentDelete: async (commentId) => {
+    return await axios.delete(HM_DOMAIN + `/comment/${commentId}`);
+  },
   // 댓글 페이지네이션(GET)
 };
 
-export default AxiosAPi;
+export default AxiosApi;
