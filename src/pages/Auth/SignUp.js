@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Button from "../components/common/Button";
-import Input from "../components/common/Input";
-import AxiosAPi from "../api/AxiosAPi";
+import Button from "../../components/common/Button";
+import Input from "../../components/common/Input";
+import AxiosAPi from "../../api/AxiosApi";
 
 /* ───────── 정규식 ───────── */
 // 이메일: 공백·@ 없는 문자 + @ + 도메인 + . + 2자 이상 최상위 도메인

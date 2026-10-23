@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import AxiosAPi from "../api/AxiosAPi";
-import BoardItem from "../components/board/BoardItem";
+import AxiosAPi from "../../api/AxiosApi";
+import BoardItem from "../../components/board/BoardItem";
 
 const Container = styled.div`
   max-width: 720px;

@@ -57,7 +57,7 @@ const AxiosAPi = {
     return await axios.get(HM_DOMAIN + "/board/list");
   },
   // 게시글 상세 조회 (GET {ID})
-  boardListID: async (id) => {
+  boardDetail: async (id) => {
     return await axios.get(HM_DOMAIN + `/board/${id}`);
   },
 

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Button from "../components/common/Button";
-import Input from "../components/common/Input";
-import AxiosAPi from "../api/AxiosAPi";
+import Button from "../../components/common/Button";
+import Input from "../../components/common/Input";
+import AxiosAPi from "../../api/AxiosApi";
 
 // 화면 전체를 차지하고, 가운데에 로그인 박스를 배치
 const Container = styled.div`
@@ -60,9 +60,11 @@ const Login = () => {
 
     // const localEmail = localStorage.getItem("email");
     // const localPwd = localStorage.getItem("pwd");
-    const memberLogin = await AxiosAPi.memberLogin(inputEmail, inputPwd);
-    console.log(memberLogin.data);
-    if (memberLogin.data === true) {
+    const response = await AxiosAPi.memberLogin(inputEmail, inputPwd);
+    console.log(response.data);
+    if (response.data) {
+      localStorage.setItem("isLogin", true);
+      localStorage.setItem("email", inputEmail);
       nav("/home", { replace: true }); // 뒤로가기로 로그인 화면에 다시 오지 않도록
     } else {
       alert("이메일 또는 비밀번호가 틀립니다.");
