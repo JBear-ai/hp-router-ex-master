@@ -9,6 +9,9 @@ import BoardList from "./pages/boards/BoardList";
 import BoardWrite from "./pages/boards/BoardWrite";
 import BoardDetail from "./pages/boards/BoardDetail";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ChatList from "./pages/chat/ChatList";
+import ChatRoomCreate from "./pages/chat/ChatRoomCreate";
+import Chatting from "./pages/chat/Chatting";
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
           <Route path="/board" element={<BoardList />} />
           <Route path="/board/write" element={<BoardWrite />} />
           <Route path="/board/:boardId" element={<BoardDetail />} />
+          <Route path="/chat" element={<ChatList />} />
+          <Route path="/chat/create" element={<ChatRoomCreate />} />
+          <Route path="/chat/:roomId" element={<Chatting />} />
 
           <Route path="/about" element={<About />} />
           <Route path="/profile/:name" element={<Profile />} />
