@@ -1,5 +1,6 @@
 import axios from "axios"; // 비동기 통신 라이브러리
 export const HM_DOMAIN = "http://localhost:8111";
+export const WS_URL = "ws://localhost:8111/ws/chat";
 
 // 토큰을 자동으로 붙이고, 만료되면 재발급 처리하는 axios 인스턴스
 const AxiosInstance = axios.create({ baseURL: HM_DOMAIN });

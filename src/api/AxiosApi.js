@@ -61,10 +61,22 @@ const AxiosApi = {
     return await AxiosInstance.get("/member/list");
   },
   // 회원 정보 수정
-
   // 회원 목록 페이지 조회
   // 회원 삭제
   // 회원 상세 조회
+
+  // 채팅방 생성
+  chatCreate: async (name) => {
+    return await AxiosInstance.post("/chat/new", { name });
+  },
+  // 채팅방 목록
+  chatList: async () => {
+    return await AxiosInstance.get("/chat/list");
+  },
+  // 채팅방 정보
+  chatRoom: async (roomId) => {
+    return await AxiosInstance.get(`/chat/room/${roomId}`);
+  },
 };
 
 export default AxiosApi;

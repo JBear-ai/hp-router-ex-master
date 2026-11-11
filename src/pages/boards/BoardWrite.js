@@ -78,7 +78,7 @@ const BoardWrite = () => {
     }
 
     try {
-      const res = await AxiosApi.boardWrite(title, content, email);
+      const res = await AxiosApi.boardWrite(title, content);
       console.log(res.data);
       if (res.data) {
         alert("게시글이 등록되었습니다.");
