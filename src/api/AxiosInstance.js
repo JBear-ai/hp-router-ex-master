@@ -29,7 +29,9 @@ AxiosInstance.interceptors.response.use(
     const url = original?.url ?? "";
     // 로그인·재발급 요청 자체의 401은 그대로 실패 처리
     const isAuthCall =
-      url.includes("/auth/login") || url.includes("/auth/reissue");
+      url.includes("/auth/login") ||
+      url.includes("/auth/kakao") ||
+      url.includes("/auth/reissue");
 
     if (err.response?.status !== 401 || isAuthCall || original._retry) {
       return Promise.reject(err);

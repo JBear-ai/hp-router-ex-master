@@ -12,6 +12,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ChatList from "./pages/chat/ChatList";
 import ChatRoomCreate from "./pages/chat/ChatRoomCreate";
 import Chatting from "./pages/chat/Chatting";
+import KakaoCallback from "./pages/kakaoCallback";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/oauth/kakao" element={<KakaoCallback />} />
         <Route element={<Layout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/board" element={<BoardList />} />

@@ -8,7 +8,7 @@ const AxiosApi = {
   },
   // 회원 가입 (POST)
   memberSignup: async (email, pwd, name) => {
-    return await AxiosInstance.get("/auth/signup", { email, pwd, name });
+    return await AxiosInstance.post("/auth/signup", { email, pwd, name });
   },
   // 로그인 (POST)
   memberLogin: async (email, pwd) => {
@@ -76,6 +76,10 @@ const AxiosApi = {
   // 채팅방 정보
   chatRoom: async (roomId) => {
     return await AxiosInstance.get(`/chat/room/${roomId}`);
+  },
+  // 카카오 로그인
+  kakaoLogin: async (code) => {
+    return await AxiosInstance.post("/auth/kakao", { code });
   },
 };
 
