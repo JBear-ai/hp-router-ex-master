@@ -9,6 +9,8 @@ const AxiosInstance = axios.create({ baseURL: HM_DOMAIN });
 export const clearAuth = () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
+  localStorage.removeItem("email"); // 화면 표시용 값도 함께 정리
+  localStorage.removeItem("isLogin");
 };
 
 // 1. 요청 인터셉터: 모든 요청에 Access 토큰 자동 첨부
