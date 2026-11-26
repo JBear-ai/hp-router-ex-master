@@ -135,12 +135,49 @@ const BackBtn = styled.button`
   cursor: pointer;
 `;
 
+const IndexFail = styled.div`
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  button {
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    background: #dc2626;
+    color: white;
+    cursor: pointer;
+  }
+`;
+
 const BoardDetail = () => {
   const { boardId } = useParams(); // 주소의 :boardId 값
   const [board, setBoard] = useState();
   const [comments, setComments] = useState([]); // 댓글 목록
   const [commentText, setCommentText] = useState(""); // 댓글 입력값
   const nav = useNavigate();
+
+  // [RAG] 재색인: 성공하면 상세를 다시 불러와 배지 갱신
+  const onReindex = async () => {
+    try {
+      const res = await AxiosApi.ragReindex(boardId);
+      alert(
+        res.data === "READY"
+          ? "검색 가능 상태가 되었습니다."
+          : "아직 색인에 실패했습니다. AI 서비스를 확인하세요.",
+      );
+      const detail = await AxiosApi.boardDetail(boardId);
+      setBoard(detail.data);
+    } catch (err) {
+      alert(err.response?.data?.message ?? "재색인 요청에 실패했습니다.");
+    }
+  };
 
   // 게시글 상세 조회: GET /board/{id}
   useEffect(() => {
@@ -218,6 +255,14 @@ const BoardDetail = () => {
           <span>{board.regDate?.substring(0, 10)}</span>
         </Meta>
         <Content>{board.content}</Content>
+        {board.indexStatus === "FAILED" && (
+          <IndexFail>
+            AI 검색 색인 실패: {board.indexError}
+            <button type="button" onClick={onReindex}>
+              재색인
+            </button>
+          </IndexFail>
+        )}
       </Card>
 
       {/* 댓글 */}
