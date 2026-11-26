@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AxiosApi from "../../api/AxiosApi";
-import AnswerView from "../../components/rag/AnswerView";
+import AnswerView from "./AnswerView";
 
 const Container = styled.div`
   max-width: 760px;
